@@ -26,6 +26,7 @@ import { formatCurrency } from "@/lib/format-currency";
 import { Download, Calculator, BadgeIndianRupee, ChartBar } from "lucide-react";
 import AccrualVisualization from "./AccrualVisualization";
 import EmailDialog from "./EmailDialog";
+import { toast } from "@/components/ui/use-toast";
 
 export const PTOCalculator: React.FC = () => {
   const [name, setName] = useState("");
@@ -36,7 +37,14 @@ export const PTOCalculator: React.FC = () => {
   const [result, setResult] = useState<PTOCalculationResult | null>(null);
   
   const handleCalculate = () => {
-    if (!name || annualSalary <= 0) return;
+    if (!name || annualSalary <= 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please ensure you've entered your name and a valid salary.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     const calculationParams = {
       annualSalary,
@@ -47,6 +55,11 @@ export const PTOCalculator: React.FC = () => {
     
     const calculationResult = calculatePTOAccrual(calculationParams);
     setResult(calculationResult);
+    
+    toast({
+      title: "Calculation Complete",
+      description: "Your PTO accrual has been calculated successfully.",
+    });
   };
   
   const handleDownloadPDF = () => {
